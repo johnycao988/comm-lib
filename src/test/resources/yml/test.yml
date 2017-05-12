@@ -1,0 +1,33 @@
+com:
+  cs:
+    yml:
+      test:
+        str: 123
+        int: 123
+        int.null: a123
+        double: 123.123
+        double.null: a123.123
+        boolean: true
+        boolean.null: atrue
+           
+aa:
+  cs:
+    yml:
+      test:
+        name2: test2
+        name3: test3
+        names:
+          name22: test22
+          name33: test33 
+
+abc.12: abc.123
+abc.enabled: true
+abc.times: 12
+abc.many: 12.12
+ 
+
+          
+
+
+   
+          
