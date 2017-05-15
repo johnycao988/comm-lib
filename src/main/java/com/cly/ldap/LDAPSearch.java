@@ -22,7 +22,7 @@ public class LDAPSearch {
 	public Attributes search(String searchBase, String searchFilter) throws NamingException {
 
 		Attributes[] atts = search(searchBase, searchFilter, true);
-		if (atts != null)
+		if (atts != null && atts.length>0)
 			return atts[0];
 		else
 			return null;
