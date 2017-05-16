@@ -1,6 +1,5 @@
 package com.cly.comm.client.config;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

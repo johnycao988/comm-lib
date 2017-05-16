@@ -4,10 +4,10 @@ import java.util.Properties;
 
 public interface UserInfoService {
 	
-	public void initProperties(Properties p) throws SecurityServerException;
+	public void initProperties(Properties p) throws SecurityAuthException;
 	
 	public void setPasswordEncryptService(PasswordEncrypt pwdService);
 	
-	public UserInfo login(String userId, String userPwd) throws SecurityServerException;
+	public UserInfo login(String userId, String userPwd) throws SecurityAuthException;
 	
 }

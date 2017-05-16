@@ -9,7 +9,7 @@ import junit.framework.Assert;
 public class Test_JSONSQL {
 
 	@Test	
-	public void Test_JSONSQL(){
+	public void Test_JSONSQL1(){
 		
 		JSONSQL js=new JSONSQL("SELECT FA, FB, FC FROM TEST_TABLE WHERE FD=? AND FE=?",100);
 		

@@ -12,7 +12,7 @@ import net.sf.json.JSONObject;
 public class Test_JSONSQLStatement {
 	
 	@Test
-	public void Test_JSONSQLStatement(){
+	public void Test_JSONSQLStatement1(){
 		
 		String testds="testds";
 		

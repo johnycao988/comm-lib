@@ -1,6 +1,6 @@
 package com.cly.security;
 
-public class SecurityServerException extends Exception {
+public class SecurityAuthException extends Exception {
 
 	/**
 	 * 
@@ -9,7 +9,7 @@ public class SecurityServerException extends Exception {
 	private String errMsg;
 	private static final long serialVersionUID = 1L;
 
-	public SecurityServerException(Exception e, String errCode, String errMsg) {
+	public SecurityAuthException(Exception e, String errCode, String errMsg) {
 		super(e);
 		init(errCode, errMsg);
 	}
@@ -21,7 +21,7 @@ public class SecurityServerException extends Exception {
 
 	}
 
-	public SecurityServerException(String errCode, String errMsg) {
+	public SecurityAuthException(String errCode, String errMsg) {
 		init(errCode, errMsg);
 	}
 

@@ -18,6 +18,8 @@ public class SecuConst {
 	
 	public final static String AUTH_CODE_CACHE="authCodeCache";	
 	
+	public final static String AUTH_USER_GROUPS="userAuthGrps";	
+	
 	private SecuConst(){
 		
 	}
