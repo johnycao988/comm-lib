@@ -11,9 +11,9 @@ public boolean	authenticateUser(ServletRequest request, ServletResponse response
 
 public boolean	authenticateUser(String userId, String authCode);
 
-public boolean authUserGroups(ServletRequest request, ServletResponse response,String[] grpNames);
+public boolean accessPermmission(ServletRequest request, ServletResponse response,String[] permissionNames);
 
-public boolean authUserGroups(String userId, String authCode,String[] grpNames);
+public boolean accessPermmission(String userId, String authCode,String[] permissionNames);
 
 public String getLoginUrl(ServletRequest request, ServletResponse response);
 

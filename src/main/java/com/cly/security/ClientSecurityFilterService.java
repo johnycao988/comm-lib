@@ -136,7 +136,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 	}
 
 	@Override
-	public boolean authUserGroups(ServletRequest request, ServletResponse response, String[] grpNames) {
+	public boolean accessPermmission(ServletRequest request, ServletResponse response, String[] permissionNames) {
 		
 		HttpServletRequest ret = (HttpServletRequest) request;
 
@@ -146,21 +146,21 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		String authCode = geCookieValue(ret, sid + COOKIE_NAME_AUTH_CODE);
 
-		return authUserGroups(uid, authCode, grpNames);
+		return accessPermmission(uid, authCode, permissionNames);
 	}
 
 	@Override
-	public boolean authUserGroups(String userId, String authCode, String[] grpNames) {
+	public boolean accessPermmission(String userId, String authCode, String[] permissionNames) {
 
-		if (userId == null || authCode == null || grpNames == null || grpNames.length <= 0)
+		if (userId == null || authCode == null || permissionNames == null || permissionNames.length <= 0)
 			return false;
 
 		JSONObject msg = new JSONObject();
 
 		JSONArray ja = new JSONArray();
 
-		for (String gn : grpNames)
-			ja.add(gn);
+		for (String pn : permissionNames)
+			ja.add(pn);
 
 		msg.put(SecuConst.USER_ID, userId);
 
@@ -168,7 +168,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		msg.put(SecuConst.AUTH_USER_GROUPS, ja);
 
-		JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/authUserGrps", msg.toString());
+		JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/authAccessPermmison", msg.toString());
 
 		return jr.isSuccess();
 

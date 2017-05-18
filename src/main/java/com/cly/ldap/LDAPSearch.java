@@ -19,9 +19,9 @@ public class LDAPSearch {
 		ctx = new InitialLdapContext(ldapCtx.getProperties(), null);
 	}
 
-	public Attributes search(String searchBase, String searchFilter) throws NamingException {
+	public Attributes search(String searchBase, String searchFilter,int scope) throws NamingException {
 
-		Attributes[] atts = search(searchBase, searchFilter, true);
+		Attributes[] atts = search(searchBase, searchFilter, scope,true);
 		if (atts != null && atts.length>0)
 			return atts[0];
 		else
@@ -29,16 +29,16 @@ public class LDAPSearch {
 
 	}
 
-	public Attributes[] multiSearch(String searchBase, String searchFilter) throws NamingException {
+	public Attributes[] multiSearch(String searchBase, String searchFilter,int scope) throws NamingException {
 
-		return search(searchBase, searchFilter, false);
+		return search(searchBase, searchFilter,scope, false);
 
 	}
 
-	private Attributes[] search(String searchBase, String searchFilter, boolean isSingle) throws NamingException {
+	private Attributes[] search(String searchBase, String searchFilter, int scope,boolean isSingle) throws NamingException {
 
 		SearchControls searchCtls = new SearchControls();
-		searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		searchCtls.setSearchScope(scope);
 		searchCtls.setReturningAttributes(null);
 		NamingEnumeration<SearchResult> answer = ctx.search(searchBase, searchFilter, searchCtls);
 
