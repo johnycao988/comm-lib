@@ -53,8 +53,10 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 				authCode = JSONUtil.getString(msg, SecuConst.AUTH_CODE);
 
 				Cookie cookie = new Cookie(sid + COOKIE_NAME_USER_ID, uid);
+				cookie.setMaxAge(-1);
 				res.addCookie(cookie);
 				cookie = new Cookie(sid + COOKIE_NAME_AUTH_CODE, authCode);
+				cookie.setMaxAge(-1);
 				res.addCookie(cookie);
 				return true;
 			}
