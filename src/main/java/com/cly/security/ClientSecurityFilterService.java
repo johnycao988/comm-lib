@@ -28,41 +28,14 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		HttpServletRequest ret = (HttpServletRequest) request;
 
-		HttpServletResponse res = (HttpServletResponse) response;
-
 		String sid = ret.getSession(true).getId();
 
 		String uid = geCookieValue(ret, sid + COOKIE_NAME_USER_ID);
 
 		String authCode = geCookieValue(ret, sid + COOKIE_NAME_AUTH_CODE);
 
-		if (authenticateUser(uid, authCode))
-			return true;
+		return authenticateUser(uid, authCode);
 
-		String inqAuthCode = request.getParameter(SecuConst.AUTH_INQ_CODE);
-
-		if (inqAuthCode != null) {
-
-			JSONObject msg = new JSONObject();
-			msg.put(SecuConst.AUTH_INQ_CODE, inqAuthCode);
-			JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/inqAuthCode", msg.toString());
-			if (jr.isSuccess()) {
-
-				msg = jr.getJSONObject();
-				uid = JSONUtil.getString(msg, SecuConst.USER_ID);
-				authCode = JSONUtil.getString(msg, SecuConst.AUTH_CODE);
-
-				Cookie cookie = new Cookie(sid + COOKIE_NAME_USER_ID, uid);
-				cookie.setMaxAge(-1);
-				res.addCookie(cookie);
-				cookie = new Cookie(sid + COOKIE_NAME_AUTH_CODE, authCode);
-				cookie.setMaxAge(-1);
-				res.addCookie(cookie);
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	@Override
@@ -139,7 +112,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 	@Override
 	public boolean accessPermmission(ServletRequest request, ServletResponse response, String[] permissionNames) {
-		
+
 		HttpServletRequest ret = (HttpServletRequest) request;
 
 		String sid = ret.getSession().getId();
@@ -174,6 +147,48 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		return jr.isSuccess();
 
+	}
+
+	@Override
+	public boolean isInqAuthCodeRequest(ServletRequest request, ServletResponse response) {
+
+		HttpServletRequest ret = (HttpServletRequest) request;
+
+		HttpServletResponse res = (HttpServletResponse) response;
+
+		String inqAuthCode = request.getParameter(SecuConst.AUTH_INQ_CODE);
+
+		if (inqAuthCode != null) {
+
+			String sid = ret.getSession(true).getId();
+
+			String uid = geCookieValue(ret, sid + COOKIE_NAME_USER_ID);
+
+			String authCode = geCookieValue(ret, sid + COOKIE_NAME_AUTH_CODE);
+
+			if (uid != null && authCode != null)
+				return false;
+
+			JSONObject msg = new JSONObject();
+			msg.put(SecuConst.AUTH_INQ_CODE, inqAuthCode);
+			JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/inqAuthCode", msg.toString());
+			if (jr.isSuccess()) {
+
+				msg = jr.getJSONObject();
+				uid = JSONUtil.getString(msg, SecuConst.USER_ID);
+				authCode = JSONUtil.getString(msg, SecuConst.AUTH_CODE);
+
+				Cookie cookie = new Cookie(sid + COOKIE_NAME_USER_ID, uid);
+				cookie.setMaxAge(-1);
+				res.addCookie(cookie);
+				cookie = new Cookie(sid + COOKIE_NAME_AUTH_CODE, authCode);
+				cookie.setMaxAge(-1);
+				res.addCookie(cookie);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

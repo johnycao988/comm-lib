@@ -16,7 +16,7 @@ public class LDAPSearchTest {
 	public void init() throws NamingException{
 		
 		LDAPContext ctx=new LDAPContext();
-		ctx.setServerUrl("ldap://10.39.101.226:10389").setUser("uid=admin,ou=system").setPassword("secret");
+		ctx.setServerUrl("ldap://10.39.101.226:10389").setUser("uid=johnny.cao,ou=users,dc=example,dc=com").setPassword("ldap123");
 		ldapSearch=new LDAPSearch(ctx);
 	}
 	

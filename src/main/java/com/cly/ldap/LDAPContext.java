@@ -1,5 +1,6 @@
 package com.cly.ldap;
 
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -10,6 +11,20 @@ public class LDAPContext {
 
 	public LDAPContext() {
 		setFactory("com.sun.jndi.ldap.LdapCtxFactory").setSecurityAuthentication("simple");
+	}
+	
+	public LDAPContext(Properties p) {
+
+		@SuppressWarnings("unchecked")
+		Enumeration<String> e= (Enumeration<String>)p.propertyNames();
+		
+		while(e.hasMoreElements()){
+			
+			String pn=e.nextElement();
+			this.env.setProperty(pn,p.getProperty(pn));
+			
+		} 
+
 	}
 
 	public LDAPContext setFactory(String ctxFactory) {
@@ -50,4 +65,6 @@ public class LDAPContext {
 		String key = "ldap.attribute.mapping.[" + name + "]";
 		return p.getProperty(key);
 	}
+	
+ 
 }

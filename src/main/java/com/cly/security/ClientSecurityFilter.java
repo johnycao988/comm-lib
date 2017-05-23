@@ -17,6 +17,8 @@ public boolean accessPermmission(String userId, String authCode,String[] permiss
 
 public String getLoginUrl(ServletRequest request, ServletResponse response);
 
+public boolean isInqAuthCodeRequest(ServletRequest request, ServletResponse response);
+
 public void initProperties(Properties p);
 
 }
