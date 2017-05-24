@@ -19,8 +19,11 @@ import net.sf.json.JSONObject;
 public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 	private static final String COOKIE_NAME_USER_ID = "#USER_ID";
+	
 	private static final String COOKIE_NAME_AUTH_CODE = "#AUTH_CODE";
+	
 	private String secuServerUrl = null;
+	
 	private String localUrl = null;
 
 	@Override
@@ -211,8 +214,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 				
 				res.addCookie(cookie);
 				
-				return true;
-				
+				return true;				
 			}
 		}
 
