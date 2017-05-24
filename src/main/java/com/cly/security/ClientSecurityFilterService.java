@@ -40,18 +40,27 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 	@Override
 	public void initProperties(Properties p) {
+
 		this.secuServerUrl = p.getProperty("cloud.security.server.url");
+
 		if (this.secuServerUrl == null) {
+
 			Logger.getGlobal().warning("Security Client Property:cloud.security.server.url has not beent set.");
+
 		}
 
 		this.localUrl = p.getProperty("cloud.security.client.url");
+
 		if (this.localUrl == null) {
+
 			Logger.getGlobal().warning("Security Client Property:cloud.security.client.url has not beent set.");
+
 		}
+
 	}
 
 	private JSONResult requestServer(String serverUrl, String msg) {
+		
 		try {
 
 			HttpRequestParam rp = new HttpRequestParam();
@@ -63,8 +72,11 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 			return new JSONResult(res);
 
 		} catch (Exception e) {
+			
 			return new JSONResult(JSONUtil.initFailed(e));
+			
 		}
+		
 	}
 
 	private String geCookieValue(HttpServletRequest rs, String cookieName) {
@@ -100,9 +112,13 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 		if (userId != null && authCode != null) {
 
 			JSONObject msg = new JSONObject();
+			
 			msg.put(SecuConst.USER_ID, userId);
+			
 			msg.put(SecuConst.AUTH_CODE, authCode);
+			
 			JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/validate", msg.toString());
+			
 			if (jr.isSuccess())
 				return true;
 		}
@@ -170,21 +186,33 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 				return false;
 
 			JSONObject msg = new JSONObject();
+			
 			msg.put(SecuConst.AUTH_INQ_CODE, inqAuthCode);
+			
 			JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/inqAuthCode", msg.toString());
+			
 			if (jr.isSuccess()) {
 
 				msg = jr.getJSONObject();
+				
 				uid = JSONUtil.getString(msg, SecuConst.USER_ID);
+				
 				authCode = JSONUtil.getString(msg, SecuConst.AUTH_CODE);
-
+				
 				Cookie cookie = new Cookie(sid + COOKIE_NAME_USER_ID, uid);
+				
 				cookie.setMaxAge(-1);
+				
 				res.addCookie(cookie);
+				
 				cookie = new Cookie(sid + COOKIE_NAME_AUTH_CODE, authCode);
+				
 				cookie.setMaxAge(-1);
+				
 				res.addCookie(cookie);
+				
 				return true;
+				
 			}
 		}
 
