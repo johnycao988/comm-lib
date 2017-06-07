@@ -11,8 +11,10 @@ public class CacheMgr {
 
 	public static void init(InputStream in) {
 		
-		if(cMgr!=null)
+		if(cMgr!=null){
 			cMgr.clearAll();
+			cMgr.shutdown();
+		}
 
 		cMgr = new CacheManager(in); 
 
@@ -22,6 +24,6 @@ public class CacheMgr {
 		return cMgr.getCache(name);
 	}
 
-	
+	 
  
 }

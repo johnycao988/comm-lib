@@ -2,19 +2,19 @@ package com.cly.comm.client.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Logger;
+import java.util.Properties; 
 
 import com.cly.comm.client.http.HttpClient;
 import com.cly.comm.client.http.HttpRequestParam;
 import com.cly.comm.util.IOUtil;
 import com.cly.comm.util.YamlParser;
+import com.cly.logging.CLYLogger; 
 
 public class ConfigClient {
 
-	private static final String AUTH_CODE = "CONFIG.SERVER.AUTH.CODE";
-	private static final String CONFIG_SERVER_URL = "CONFIG.SERVER.URL";
-	private static final String ROOT_CONFIG_PATH = "CONFIG.SERVER.ROOT.PATH";
+	private static final String AUTH_CODE = "CONFIG.SERVICE.AUTH.CODE";
+	private static final String CONFIG_SERVICE_URL = "CONFIG.SERVICE.URL";
+	private static final String ROOT_CONFIG_PATH = "CONFIG.ROOT.PATH";
 
 	private static String configServerUrl = init();
 	private static String rootConfigPath;
@@ -26,31 +26,30 @@ public class ConfigClient {
 
 	private static String init() {
 
-		Logger logger = Logger.getGlobal();
-
+	
 		authCode = System.getProperty(AUTH_CODE, null);
 
 		String pss = "Property:[";
 		String pse = "] of Config Client is not set.";
 
 		if (authCode == null) {
-			logger.warning(pss + AUTH_CODE + pse);
+			CLYLogger.systemErr(pss + AUTH_CODE + pse);
 		}
 
-		String serverUrl = System.getProperty(CONFIG_SERVER_URL, null);
+		String serverUrl = System.getProperty(CONFIG_SERVICE_URL, null);
 
 		if (serverUrl == null) {
-			logger.warning(pss + CONFIG_SERVER_URL + pse);
+			CLYLogger.systemErr(pss + CONFIG_SERVICE_URL + pse);
 		} else {
-			logger.info("Config server url is:" + serverUrl);
+			CLYLogger.systemInfo("Config server url is:" + serverUrl);
 		}
 
 		rootConfigPath = System.getProperty(ROOT_CONFIG_PATH, null);
 
 		if (rootConfigPath == null) {
-			logger.warning(pss + ROOT_CONFIG_PATH + pse);
+			CLYLogger.systemErr(pss + ROOT_CONFIG_PATH + pse);
 		} else {
-			logger.info("Config server root path is:" + rootConfigPath);
+			CLYLogger.systemInfo("Config server root path is:" + rootConfigPath);
 		}
 
 		return serverUrl;
@@ -90,9 +89,13 @@ public class ConfigClient {
 		if (authCode != null)
 			rp.addParam("AUTH_CODE", authCode);
 
-		rp.addParam("CONFIG_FILE_NAME", rootConfigPath + "/" + configFile);
-
+		rp.addParam("CONFIG_FILE_NAME", rootConfigPath + configFile);
+		
+		CLYLogger.systemInfo("A request to Config server:"+configServerUrl+", msg:"+rp.toString());
+				 
 		return HttpClient.getInputStream(configServerUrl, HttpClient.REQUEST_METHOD_POST, rp);
 	}
+	
+	 
 
 }

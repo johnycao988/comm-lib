@@ -56,5 +56,16 @@ public class CLYLogger {
 	 	 return logger.getLevel().toInt();
 	}
 	
+	public static void systemErr(Exception e){
+		System.err.println(e.getMessage());
+	}
+	
+	public static void systemErr(Object msg){
+		System.err.println(msg);
+	}
+	
+	public static void systemInfo(Object msg){
+		System.out.println(msg);
+	}
 
 }
