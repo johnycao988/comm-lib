@@ -1,36 +1,28 @@
 package com.cly.logs;
 
+ 
 import java.io.IOException;
-
+ 
 import org.junit.Test;
-
-import com.cly.comm.client.config.ConfigClient;
-import com.cly.logging.CLYLogger;
-import com.cly.logging.CLYLoggerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory; 
+import com.cly.logging.LoggingManager;
 
 public class TestCSLogger {
 	
 	 
-	public void testCSLogger(){
-		
-		CLYLoggerManager.initXMLConfig(TestCSLogger.class.getResource("/logs/logger.config.xml").getFile());
-		
-		CLYLogger logger=CLYLoggerManager.getLogger(TestCSLogger.class.getName()); 
-		
-		logger.fatal("saa");
-		
-	}
-
+ 
+	
 	@Test
-	public void testCSLogger1() throws IOException{
+	public void testSLF4JLogger() throws IOException{
 		
-		CLYLoggerManager.initPropertiesConfig(ConfigClient.getInputStream("/cloud.security/cloud.security.server.log4j.properties"));
+		String configFile=TestCSLogger.class.getResource("/logs/logger.config.xml").getFile();
 		
-		//CLYLoggerManager.initXMLConfig("C:/Users/SuperM/workspace-myprojects/AppConfig/dev/cloud.security/cloud.security.server.log4j.xml");
+		LoggingManager.initLog4j2Config(configFile);		 
 		
-		CLYLogger logger=CLYLoggerManager.getRootLogger();
+		final  Logger logger  =  LoggerFactory.getLogger(LoggingManager.class);
 		
-		logger.fatal("saa");
+		logger.error("test error!");
 		
 	}
 	

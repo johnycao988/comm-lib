@@ -1,6 +1,6 @@
 package com.cly.comm.util;
 
-import com.cly.logging.CLYLoggerManager;
+import com.cly.logging.LoggingManager;
 
 public class NumberUtil {
 
@@ -17,7 +17,7 @@ public class NumberUtil {
 				return Long.parseLong(mfs);
 		} catch (Exception e) {
 
-			CLYLoggerManager.getRootLogger().errorException(e);
+			LoggingManager.getRootLogger().error("parser long error:", e);
 
 			return defaultValue;
 		}

@@ -13,7 +13,8 @@ public class ConfigClientTest {
 	public void testConfigOnLocal() throws IOException{ 
 	  
 		try{ 
-		
+			 		
+		ConfigClient.init("config.auth.code:001", "http://10.39.101.226:3080/GetConfigFile", "/AppConfig/test");
 		String s=ConfigClient.getText("/tomcat.conf/catalina.properties"); 		
 	   // String s=ConfigClient.getText("/test.properties");
         System.out.println(s);
