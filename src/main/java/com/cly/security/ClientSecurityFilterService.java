@@ -104,7 +104,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		HttpServletRequest rst = (HttpServletRequest) request;
 
-		return this.secuServerUrl + "/login/authLogin.jsp?" + SecuConst.AUTH_REDIRECT_URL + "=" + this.localUrl
+		return this.secuServerUrl + "/login?" + SecuConst.AUTH_REDIRECT_URL + "=" + this.localUrl
 				+ rst.getRequestURI();
 
 	}
@@ -120,7 +120,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 			
 			msg.put(SecuConst.AUTH_CODE, authCode);
 			
-			JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/validate", msg.toString());
+			JSONResult jr = this.requestServer(this.secuServerUrl + "/user/validate", msg.toString());
 			
 			if (jr.isSuccess())
 				return true;
@@ -162,7 +162,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		msg.put(SecuConst.AUTH_USER_GROUPS, ja);
 
-		JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/authAccessPermmison", msg.toString());
+		JSONResult jr = this.requestServer(this.secuServerUrl + "/user/authAccessPermmison", msg.toString());
 
 		return jr.isSuccess();
 
@@ -192,7 +192,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 			
 			msg.put(SecuConst.AUTH_INQ_CODE, inqAuthCode);
 			
-			JSONResult jr = this.requestServer(this.secuServerUrl + "/rest/user/inqAuthCode", msg.toString());
+			JSONResult jr = this.requestServer(this.secuServerUrl + "/user/inqAuthCode", msg.toString());
 			
 			if (jr.isSuccess()) {
 

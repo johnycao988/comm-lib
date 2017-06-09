@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <configuration status="error" monitorInterval="30">
+        <!--先定义所有的appender-->
+        
+        <Properties>
+            <Property name="PATTERN">%d %-5p [%t] %C{1} (%F:%L) - %m%n</Property>
+        </Properties>
+        <appenders>
+            <!--这个输出控制台的配置-->
+            <Console name="Console" target="SYSTEM_OUT">
+                <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+                <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+                <!--这个都知道是输出日志的格式-->
+                <PatternLayout pattern="${PATTERN}"/>
+            </Console>
+  
+            <RollingFile name="RollingFile" fileName="c:/temp/cloud.security.service.log"
+                     filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                <PatternLayout pattern="${PATTERN}"/>
+                <SizeBasedTriggeringPolicy size="50MB"/>
+                <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+                <DefaultRolloverStrategy max="20"/>
+            </RollingFile>
+     
+             <ELK name="ELK" host="10.39.101.226" port="3456" protocol="TCP">
+                <PatternLayout pattern="${PATTERN}"/>            
+            </ELK>
+  
+        </appenders>
+      
+        <loggers>
+          
+            <root  level="trace">
+                 <appender-ref ref="Console"/>
+            </root> 
+            
+            <logger name="cloud.security.service" level="debug">
+                <appender-ref ref="RollingFile"/> 
+                <appender-ref ref="Console"/> 
+                 
+            </logger> 
+            
+        </loggers>
+    </configuration>

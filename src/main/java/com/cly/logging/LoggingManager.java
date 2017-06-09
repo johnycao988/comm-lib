@@ -1,35 +1,12 @@
 package com.cly.logging;
 
-import java.io.FileInputStream;  
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory; 
+ 
 
 public class LoggingManager {
 
 	private LoggingManager() {
-
-	}
-
-	public static void initLog4j2Config(String configFile) throws IOException {
-
-		try (FileInputStream is = new FileInputStream(configFile)) {
-
-			initLog4j2Config(is);
-			
-		}
-
-	}
-
-	public static void initLog4j2Config(InputStream inputConfig) throws IOException {
-
-		ConfigurationSource cs = new ConfigurationSource(inputConfig);
-
-		Configurator.initialize(null, cs);
 
 	}
 
@@ -57,10 +34,18 @@ public class LoggingManager {
 
 	}
 	
+	public static void systemErr(Exception e) {
+
+		e.printStackTrace();
+
+	}
+	
 	public static void systemInfo(Object info) {
 
 		System.out.println(info);
 
 	}
+
+ 
 
 }
