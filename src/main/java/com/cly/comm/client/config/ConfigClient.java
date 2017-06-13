@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.w3c.dom.Document; 
+
 import com.cly.comm.client.http.HttpClient;
 import com.cly.comm.client.http.HttpRequestParam;
 import com.cly.comm.util.IOUtil;
+import com.cly.comm.util.XMLUtil;
 import com.cly.comm.util.YamlParser;
 import com.cly.logging.LoggingManager;
 
@@ -89,6 +92,18 @@ public class ConfigClient {
 		try (InputStream is = getInputStream(configFile);) {
 
 			return IOUtil.getInputStreamBytes(is);
+		}
+	}
+
+	public static Document getDocuement(String configFile) throws IOException {
+
+		try {
+			try (InputStream is = getInputStream(configFile);) {
+
+				return XMLUtil.parse(is);
+			}
+		} catch (Exception e) {
+			throw new IOException(e);
 		}
 	}
 

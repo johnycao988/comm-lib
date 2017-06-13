@@ -13,6 +13,10 @@ public class JSONUtil {
 	private JSONUtil() {
 
 	}
+	
+	public static String getMSHealthCheckResponse(){
+		return "{\"status\":\"UP\"}";
+	}
 
 	public static String xmlToJson(String xmlCont) {
 		return new XMLSerializer().read(xmlCont).toString();
