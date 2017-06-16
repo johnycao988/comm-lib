@@ -1,16 +1,21 @@
 package com.cly.security;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+
 import com.cly.comm.client.http.HttpClient;
 import com.cly.comm.client.http.HttpRequestParam;
 import com.cly.comm.util.JSONResult;
 import com.cly.comm.util.JSONUtil;
+import com.cly.logging.LoggingManager;
 import com.cly.security.SecuConst;
 
 import net.sf.json.JSONArray;
@@ -19,36 +24,81 @@ import net.sf.json.JSONObject;
 public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 	private static final String COOKIE_NAME_USER_ID = "#USER_ID";
-	
+
 	private static final String COOKIE_NAME_AUTH_CODE = "#AUTH_CODE";
-	
+
 	private String secuServerUrl = null;
-	
+
 	private String localUrl = null;
 
+	private Logger logger;
+
+	private ArrayList<String> excludeUris = new ArrayList<String>();
+
 	@Override
-	public boolean authenticateUser(ServletRequest request, ServletResponse response) {
+	public boolean authenticateUser(HttpServletRequest request, HttpServletResponse response,
+			boolean forwardUserLoginPage) throws IOException {
 
-		HttpServletRequest ret = (HttpServletRequest) request;
+		String reqUri = request.getServletPath();
 
-		String sid = ret.getSession(true).getId();
+		for (String s : this.excludeUris) {
 
-		String uid = geCookieValue(ret, sid + COOKIE_NAME_USER_ID);
+			if (s.equals(reqUri)) {
 
-		String authCode = geCookieValue(ret, sid + COOKIE_NAME_AUTH_CODE);
+				return true;
+			}
 
-		return authenticateUser(uid, authCode);
+		}
+
+		String sid = request.getSession(true).getId();
+
+		String uid = geCookieValue(request, sid + COOKIE_NAME_USER_ID);
+
+		String authCode = geCookieValue(request, sid + COOKIE_NAME_AUTH_CODE);
+
+		if (isInqAuthCodeRequest(request, response))
+			return true;
+
+		if (!authenticateUser(uid, authCode)) {
+
+			if (forwardUserLoginPage) {
+
+				String loginUrl = getLoginUrl(request);
+				response.sendRedirect(loginUrl);
+
+			}
+
+			return false;
+
+		}
+
+		return true;
 
 	}
 
 	@Override
-	public void initProperties(Properties p) {
+	public void init(Properties p) {
 
+		this.excludeUris.clear();
+
+		String loggerName = p.getProperty("cloud.security.client.filter.logger.name");
+		if (loggerName != null && loggerName.trim().length() > 0) {
+
+			logger = LoggingManager.getLogger(loggerName);
+
+		} else {
+
+			logger = LoggingManager.getRootLogger();
+
+			this.logger.warn("Security Client Property:cloud.security.client.filter.logger.name has not beent set.");
+		}
+
+	 
 		this.secuServerUrl = p.getProperty("cloud.security.server.url");
 
 		if (this.secuServerUrl == null) {
 
-			Logger.getGlobal().warning("Security Client Property:cloud.security.server.url has not beent set.");
+			this.logger.warn("Security Client Property:cloud.security.server.url has not beent set.");
 
 		}
 
@@ -56,14 +106,30 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		if (this.localUrl == null) {
 
-			Logger.getGlobal().warning("Security Client Property:cloud.security.client.url has not beent set.");
+			this.logger.warn("Security Client Property:cloud.security.client.url has not beent set.");
 
+		}
+
+		String se = p.getProperty("cloud.security.client.filter.exclude.uris");
+
+		if (se != null && se.trim().length() > 0) {
+
+			String[] uris = se.trim().split(";");
+
+			for (String uri : uris) {
+
+				this.logger.debug("Exinclude filter uri:" + uri);
+				this.addExcludeUri(uri);
+			}
+
+		} else {
+			this.logger.warn("Security Client Property:cloud.security.client.filter.exclude.uris has not beent set.");
 		}
 
 	}
 
 	private JSONResult requestServer(String serverUrl, String msg) {
-		
+
 		try {
 
 			HttpRequestParam rp = new HttpRequestParam();
@@ -75,11 +141,11 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 			return new JSONResult(res);
 
 		} catch (Exception e) {
-			
+
 			return new JSONResult(JSONUtil.initFailed(e));
-			
+
 		}
-		
+
 	}
 
 	private String geCookieValue(HttpServletRequest rs, String cookieName) {
@@ -99,13 +165,10 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 		return null;
 	}
 
-	@Override
-	public String getLoginUrl(ServletRequest request, ServletResponse response) {
-
-		HttpServletRequest rst = (HttpServletRequest) request;
+	private String getLoginUrl(HttpServletRequest request) {
 
 		return this.secuServerUrl + "/login?" + SecuConst.AUTH_REDIRECT_URL + "=" + this.localUrl
-				+ rst.getRequestURI();
+				+ request.getRequestURI();
 
 	}
 
@@ -115,13 +178,13 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 		if (userId != null && authCode != null) {
 
 			JSONObject msg = new JSONObject();
-			
+
 			msg.put(SecuConst.USER_ID, userId);
-			
+
 			msg.put(SecuConst.AUTH_CODE, authCode);
-			
+
 			JSONResult jr = this.requestServer(this.secuServerUrl + "/user/validate", msg.toString());
-			
+
 			if (jr.isSuccess())
 				return true;
 		}
@@ -130,15 +193,14 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 	}
 
 	@Override
-	public boolean accessPermmission(ServletRequest request, ServletResponse response, String[] permissionNames) {
+	public boolean accessPermmission(HttpServletRequest request, HttpServletResponse response,
+			String[] permissionNames) {
 
-		HttpServletRequest ret = (HttpServletRequest) request;
+		String sid = request.getSession().getId();
 
-		String sid = ret.getSession().getId();
+		String uid = geCookieValue(request, sid + COOKIE_NAME_USER_ID);
 
-		String uid = geCookieValue(ret, sid + COOKIE_NAME_USER_ID);
-
-		String authCode = geCookieValue(ret, sid + COOKIE_NAME_AUTH_CODE);
+		String authCode = geCookieValue(request, sid + COOKIE_NAME_AUTH_CODE);
 
 		return accessPermmission(uid, authCode, permissionNames);
 	}
@@ -168,8 +230,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 	}
 
-	@Override
-	public boolean isInqAuthCodeRequest(ServletRequest request, ServletResponse response) {
+	private boolean isInqAuthCodeRequest(ServletRequest request, ServletResponse response) {
 
 		HttpServletRequest ret = (HttpServletRequest) request;
 
@@ -189,36 +250,43 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 				return false;
 
 			JSONObject msg = new JSONObject();
-			
+
 			msg.put(SecuConst.AUTH_INQ_CODE, inqAuthCode);
-			
+
 			JSONResult jr = this.requestServer(this.secuServerUrl + "/user/inqAuthCode", msg.toString());
-			
+
 			if (jr.isSuccess()) {
 
 				msg = jr.getJSONObject();
-				
+
 				uid = JSONUtil.getString(msg, SecuConst.USER_ID);
-				
+
 				authCode = JSONUtil.getString(msg, SecuConst.AUTH_CODE);
-				
+
 				Cookie cookie = new Cookie(sid + COOKIE_NAME_USER_ID, uid);
-				
+
 				cookie.setMaxAge(-1);
-				
+
 				res.addCookie(cookie);
-				
+
 				cookie = new Cookie(sid + COOKIE_NAME_AUTH_CODE, authCode);
-				
+
 				cookie.setMaxAge(-1);
-				
+
 				res.addCookie(cookie);
-				
-				return true;				
+
+				return true;
 			}
 		}
 
 		return false;
+	}
+
+	@Override
+	public ClientSecurityFilter addExcludeUri(String uri) {
+
+		this.excludeUris.add(uri);
+		return this;
 	}
 
 }

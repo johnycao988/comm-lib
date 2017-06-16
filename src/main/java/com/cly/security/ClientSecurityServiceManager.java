@@ -26,7 +26,7 @@ public class ClientSecurityServiceManager {
 			
 			secuFilterService = (ClientSecurityFilter) createServiceInstance("cloud.security.client.filter.service");
 
-			secuFilterService.initProperties(securityProperties); 
+			secuFilterService.init(securityProperties); 
 		}
 
 		return secuFilterService;

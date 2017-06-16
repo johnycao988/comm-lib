@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.w3c.dom.Document; 
+import org.w3c.dom.Document;
 
 import com.cly.comm.client.http.HttpClient;
 import com.cly.comm.client.http.HttpRequestParam;
+import com.cly.comm.intf.CLYProperties;
 import com.cly.comm.util.IOUtil;
 import com.cly.comm.util.XMLUtil;
 import com.cly.comm.util.YamlParser;
@@ -27,7 +28,16 @@ public class ConfigClient {
 
 	}
 
-	public static void init(String configAuthCode, String configServerUrl, String rootConfigPath) {
+	public static void init(CLYProperties prop) {
+
+		String configAuthCode = prop.getProperty(ConfigClient.AUTH_CODE);
+		String configServerUrl = prop.getProperty(ConfigClient.CONFIG_SERVICE_URL);
+		String rootConfigPath = prop.getProperty(ConfigClient.ROOT_CONFIG_PATH);
+		init(configAuthCode, configServerUrl, rootConfigPath);
+
+	}
+
+	private static void init(String configAuthCode, String configServerUrl, String rootConfigPath) {
 
 		authCode = configAuthCode;
 		if (authCode == null)
