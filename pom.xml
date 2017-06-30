@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cly</groupId>
 	<artifactId>comm-lib</artifactId>
-	<version>1.5</version>
+	<version>1.0</version>
 
 	<dependencies>
 
@@ -94,8 +94,8 @@
 
 	<distributionManagement>
 		<repository>
-			<id>cs_release</id>
-			<url>http://10.39.101.226:8081/nexus/content/repositories/releases/</url>
+			<id>nexus</id>
+			<url>http://10.39.101.226:8081/repository/cly_release/</url>
 		</repository>
 	</distributionManagement>
 

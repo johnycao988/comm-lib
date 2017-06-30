@@ -23,9 +23,9 @@ import net.sf.json.JSONObject;
 
 public class ClientSecurityFilterService implements ClientSecurityFilter {
 
-	private static final String COOKIE_NAME_USER_ID = "#USER_ID";
+	private static final String COOKIE_NAME_USER_ID = "CLOUD.SECURITY.FILTER#USER_ID";
 
-	private static final String COOKIE_NAME_AUTH_CODE = "#AUTH_CODE";
+	private static final String COOKIE_NAME_AUTH_CODE = "CLOUD.SECURITY.FILTER#AUTH_CODE";
 
 	private String secuServerUrl = null;
 
@@ -50,11 +50,10 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		}
 
-		String sid = request.getSession(true).getId();
+	 
+		String uid = geCookieValue(request,  COOKIE_NAME_USER_ID);
 
-		String uid = geCookieValue(request, sid + COOKIE_NAME_USER_ID);
-
-		String authCode = geCookieValue(request, sid + COOKIE_NAME_AUTH_CODE);
+		String authCode = geCookieValue(request,  COOKIE_NAME_AUTH_CODE);
 
 		if (isInqAuthCodeRequest(request, response))
 			return true;
@@ -196,11 +195,10 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 	public boolean accessPermmission(HttpServletRequest request, HttpServletResponse response,
 			String[] permissionNames) {
 
-		String sid = request.getSession().getId();
+		 
+		String uid = geCookieValue(request,  COOKIE_NAME_USER_ID);
 
-		String uid = geCookieValue(request, sid + COOKIE_NAME_USER_ID);
-
-		String authCode = geCookieValue(request, sid + COOKIE_NAME_AUTH_CODE);
+		String authCode = geCookieValue(request,  COOKIE_NAME_AUTH_CODE);
 
 		return accessPermmission(uid, authCode, permissionNames);
 	}
@@ -240,11 +238,10 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		if (inqAuthCode != null) {
 
-			String sid = ret.getSession(true).getId();
+			 
+			String uid = geCookieValue(ret,  COOKIE_NAME_USER_ID);
 
-			String uid = geCookieValue(ret, sid + COOKIE_NAME_USER_ID);
-
-			String authCode = geCookieValue(ret, sid + COOKIE_NAME_AUTH_CODE);
+			String authCode = geCookieValue(ret,  COOKIE_NAME_AUTH_CODE);
 
 			if (uid != null && authCode != null)
 				return false;
@@ -263,13 +260,13 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 				authCode = JSONUtil.getString(msg, SecuConst.AUTH_CODE);
 
-				Cookie cookie = new Cookie(sid + COOKIE_NAME_USER_ID, uid);
+				Cookie cookie = new Cookie(COOKIE_NAME_USER_ID, uid);
 
 				cookie.setMaxAge(-1);
 
 				res.addCookie(cookie);
 
-				cookie = new Cookie(sid + COOKIE_NAME_AUTH_CODE, authCode);
+				cookie = new Cookie( COOKIE_NAME_AUTH_CODE, authCode);
 
 				cookie.setMaxAge(-1);
 
