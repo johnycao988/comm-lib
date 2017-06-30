@@ -20,6 +20,10 @@ public class SecuConst {
 	
 	public final static String AUTH_USER_GROUPS="userAuthGrps";	
 	
+	public final static String AUTH_KV_AUTHCODE="CLOUD.SECURITY.AUTHCODE:";	
+	
+	public final static String AUTH_KV_INQ_AUTHCODE="CLOUD.SECURITY.INQ.AUTHCODE:";	
+	
 	private SecuConst(){
 		
 	}

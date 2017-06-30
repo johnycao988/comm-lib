@@ -8,9 +8,9 @@ public interface UserAuthService {
 	
 	public UserInfo login(String userId, String userPwd) throws SecurityAuthException;
 	
-	public boolean logout(String userId, String autCode) throws SecurityAuthException;
+	public boolean logout(String userId, String authCode) throws SecurityAuthException;
 	
-	public boolean authenticate(String userId, String autCode) throws SecurityAuthException;
+	public boolean authenticate(String userId, String authCode) throws SecurityAuthException;
 	
 	public PermissionAuthResult authPermissions(String userId, String authCode, String[] authPermissionNames) throws SecurityAuthException;
 	
