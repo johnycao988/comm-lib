@@ -1,5 +1,10 @@
 package com.cly.security;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import com.cly.comm.util.JSONUtil;
 
 import net.sf.json.JSONArray;
@@ -11,6 +16,8 @@ public class UserInfo {
 	private String userName;
 	private String authCode;
 	private String[] userGroups;
+	private String loginTime;
+	
 
 	public UserInfo(String userId, String userName, String authCode, String[] userGroups) {
 
@@ -18,6 +25,17 @@ public class UserInfo {
 		this.userName = userName;
 		this.authCode = authCode;
 		this.userGroups = userGroups;
+		initLoginTime();
+	}
+	
+	private void initLoginTime(){
+		
+		Calendar cd = Calendar.getInstance();  
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE  yyyy MM dd HH:mm:ss 'GMT'", Locale.US);  
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));  
+		this.loginTime = sdf.format(cd.getTime()); 
+
+		
 	}
 
 	public UserInfo(JSONObject jsonUserInfo) {
@@ -25,7 +43,10 @@ public class UserInfo {
 		this.userId = JSONUtil.getString(jsonUserInfo, SecuConst.USER_ID);
 		this.userName = JSONUtil.getString(jsonUserInfo, SecuConst.USER_NAME);
 		this.authCode = JSONUtil.getString(jsonUserInfo, SecuConst.AUTH_CODE);
+		this.loginTime=JSONUtil.getString(jsonUserInfo, "loginTime");
+		
 		JSONArray ja = JSONUtil.getJSONArray(jsonUserInfo, SecuConst.AUTH_USER_GROUPS);
+		
 		if (ja != null && ja.size() > 0)
 			this.userGroups = (String[]) ja.toArray(new String[0]);
 
@@ -54,6 +75,12 @@ public class UserInfo {
 
 	}
 
+	public String getLoginTime() {
+
+		return this.loginTime;
+
+	}
+	
 	@Override
 	public String toString() {
 
@@ -64,6 +91,8 @@ public class UserInfo {
 		jo.put(SecuConst.USER_NAME, this.userName);
 
 		jo.put(SecuConst.AUTH_CODE, this.authCode);
+		
+		jo.put("loginTime", this.loginTime);
 
 		JSONArray ja = new JSONArray();
 
