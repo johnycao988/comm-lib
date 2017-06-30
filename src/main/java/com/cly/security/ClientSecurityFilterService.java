@@ -80,6 +80,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 		this.excludeUris.clear();
 
 		String loggerName = p.getProperty("cloud.security.client.filter.logger.name");
+
 		if (loggerName != null && loggerName.trim().length() > 0) {
 
 			logger = LoggingManager.getLogger(loggerName);
@@ -193,35 +194,36 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 	public boolean accessPermmission(HttpServletRequest request, HttpServletResponse response,
 			String[] permissionNames) {
 
-		String uid = geCookieValue(request, COOKIE_NAME_USER_ID);
+		try {
 
-		String authCode = geCookieValue(request, COOKIE_NAME_AUTH_CODE);
+			PermissionAuthResult par = getAccessPermmission(request, response, permissionNames);
 
-		return accessPermmission(uid, authCode, permissionNames);
+			return par.isAllPermissionsPassed();
+
+		} catch (Exception e) {
+
+			this.logger.error("", e);
+		}
+
+		return false;
+
 	}
 
 	@Override
 	public boolean accessPermmission(String userId, String authCode, String[] permissionNames) {
 
-		if (userId == null || authCode == null || permissionNames == null || permissionNames.length <= 0)
-			return false;
+		try {
 
-		JSONObject msg = new JSONObject();
+			PermissionAuthResult par = getAccessPermmission(userId, authCode, permissionNames);
 
-		JSONArray ja = new JSONArray();
+			return par.isAllPermissionsPassed();
 
-		for (String pn : permissionNames)
-			ja.add(pn);
+		} catch (Exception e) {
 
-		msg.put(SecuConst.USER_ID, userId);
+			this.logger.error("", e);
+		}
 
-		msg.put(SecuConst.AUTH_CODE, authCode);
-
-		msg.put(SecuConst.AUTH_USER_GROUPS, ja);
-
-		JSONResult jr = this.requestServer(this.secuServerUrl + "/user/authAccessPermmison", msg.toString());
-
-		return jr.isSuccess();
+		return false;
 
 	}
 
@@ -324,6 +326,46 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 		String authCode = geCookieValue(request, COOKIE_NAME_AUTH_CODE);
 
 		return logout(uid, authCode);
+	}
+
+	@Override
+	public PermissionAuthResult getAccessPermmission(HttpServletRequest request, HttpServletResponse response,
+			String[] permissionNames) throws IOException {
+
+		String uid = geCookieValue(request, COOKIE_NAME_USER_ID);
+
+		String authCode = geCookieValue(request, COOKIE_NAME_AUTH_CODE);
+
+		return getAccessPermmission(uid, authCode, permissionNames);
+
+	}
+
+	@Override
+	public PermissionAuthResult getAccessPermmission(String userId, String authCode, String[] permissionNames)
+			throws IOException {
+
+		JSONObject msg = new JSONObject();
+
+		JSONArray ja = new JSONArray();
+
+		for (String pn : permissionNames)
+			ja.add(pn);
+
+		msg.put(SecuConst.USER_ID, userId);
+
+		msg.put(SecuConst.AUTH_CODE, authCode);
+
+		msg.put(SecuConst.AUTH_USER_GROUPS, ja);
+
+		HttpRequestParam rp = new HttpRequestParam();
+
+		rp.addParam(HttpRequestParam.REQ_JSON_MESSAGE_NAME, msg.toString());
+
+		String res = HttpClient.request(this.secuServerUrl + "/user/authAccessPermmison",
+				HttpClient.REQUEST_METHOD_POST, rp);
+
+		return new PermissionAuthResult(JSONObject.fromObject(res));
+
 	}
 
 }

@@ -35,8 +35,11 @@ public class PermissionAuthResult {
 
 				al.add(ap);
 			}
+			
+			this.permissionList=al;
 
 		}
+		
 
 	}
 

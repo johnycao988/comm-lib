@@ -21,7 +21,7 @@ public class AuthPermission {
 
 		this.name = JSONUtil.getString(jo, "name");
 
-		this.isPermitted = JSONUtil.getBoolean(jo, "isPermittied");
+		this.isPermitted = JSONUtil.getBoolean(jo, "permitted");
 
 	}
 
@@ -38,7 +38,7 @@ public class AuthPermission {
 
 		JSONObject jo = new JSONObject();
 		jo.put("name", this.name);
-		jo.put("isPermittied", this.isPermitted);
+		jo.put("permitted", this.isPermitted);
 		return jo.toString();
 	}
 

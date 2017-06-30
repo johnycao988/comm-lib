@@ -16,7 +16,11 @@ public boolean	authenticateUser(String userId, String authCode);
 
 public boolean accessPermmission(HttpServletRequest request, HttpServletResponse response,String[] permissionNames);
 
-public boolean accessPermmission(String userId, String authCode,String[] permissionNames);  
+public boolean accessPermmission(String userId, String authCode,String[] permissionNames); 
+
+public PermissionAuthResult getAccessPermmission(HttpServletRequest request, HttpServletResponse response,String[] permissionNames) throws IOException;
+
+public PermissionAuthResult getAccessPermmission(String userId, String authCode,String[] permissionNames) throws IOException; 
 
 public boolean logout(String userId, String authCode);  
 
