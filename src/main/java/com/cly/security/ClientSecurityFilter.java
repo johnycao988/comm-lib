@@ -18,6 +18,10 @@ public boolean accessPermmission(HttpServletRequest request, HttpServletResponse
 
 public boolean accessPermmission(String userId, String authCode,String[] permissionNames);  
 
+public boolean logout(String userId, String authCode);  
+
+public boolean	logout(HttpServletRequest request, HttpServletResponse response);
+
 public ClientSecurityFilter addExcludeUri(String uri); 
 
 }

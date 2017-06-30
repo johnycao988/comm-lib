@@ -50,10 +50,9 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		}
 
-	 
-		String uid = geCookieValue(request,  COOKIE_NAME_USER_ID);
+		String uid = geCookieValue(request, COOKIE_NAME_USER_ID);
 
-		String authCode = geCookieValue(request,  COOKIE_NAME_AUTH_CODE);
+		String authCode = geCookieValue(request, COOKIE_NAME_AUTH_CODE);
 
 		if (isInqAuthCodeRequest(request, response))
 			return true;
@@ -92,7 +91,6 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 			this.logger.warn("Security Client Property:cloud.security.client.filter.logger.name has not beent set.");
 		}
 
-	 
 		this.secuServerUrl = p.getProperty("cloud.security.server.url");
 
 		if (this.secuServerUrl == null) {
@@ -195,10 +193,9 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 	public boolean accessPermmission(HttpServletRequest request, HttpServletResponse response,
 			String[] permissionNames) {
 
-		 
-		String uid = geCookieValue(request,  COOKIE_NAME_USER_ID);
+		String uid = geCookieValue(request, COOKIE_NAME_USER_ID);
 
-		String authCode = geCookieValue(request,  COOKIE_NAME_AUTH_CODE);
+		String authCode = geCookieValue(request, COOKIE_NAME_AUTH_CODE);
 
 		return accessPermmission(uid, authCode, permissionNames);
 	}
@@ -238,10 +235,9 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		if (inqAuthCode != null) {
 
-			 
-			String uid = geCookieValue(ret,  COOKIE_NAME_USER_ID);
+			String uid = geCookieValue(ret, COOKIE_NAME_USER_ID);
 
-			String authCode = geCookieValue(ret,  COOKIE_NAME_AUTH_CODE);
+			String authCode = geCookieValue(ret, COOKIE_NAME_AUTH_CODE);
 
 			if (uid != null && authCode != null)
 				return false;
@@ -266,7 +262,7 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 				res.addCookie(cookie);
 
-				cookie = new Cookie( COOKIE_NAME_AUTH_CODE, authCode);
+				cookie = new Cookie(COOKIE_NAME_AUTH_CODE, authCode);
 
 				cookie.setMaxAge(-1);
 
@@ -284,6 +280,50 @@ public class ClientSecurityFilterService implements ClientSecurityFilter {
 
 		this.excludeUris.add(uri);
 		return this;
+	}
+
+	@Override
+	public boolean logout(String userId, String authCode) {
+
+		if (userId != null && authCode != null) {
+
+			JSONObject msg = new JSONObject();
+
+			msg.put(SecuConst.USER_ID, userId);
+
+			msg.put(SecuConst.AUTH_CODE, authCode);
+
+			JSONResult jr = this.requestServer(this.secuServerUrl + "/user/msgLogout", msg.toString());
+
+			if (jr.isSuccess())
+				return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean logout(HttpServletRequest request, HttpServletResponse response) {
+
+		String[] delCookies = { COOKIE_NAME_USER_ID, COOKIE_NAME_AUTH_CODE };
+
+		for (String cookie : delCookies) {
+
+			Cookie delCookie = new Cookie(cookie, null);
+
+			delCookie.setMaxAge(0);
+
+			delCookie.setPath("/");
+
+			response.addCookie(delCookie);
+
+		}
+
+		String uid = geCookieValue(request, COOKIE_NAME_USER_ID);
+
+		String authCode = geCookieValue(request, COOKIE_NAME_AUTH_CODE);
+
+		return logout(uid, authCode);
 	}
 
 }
