@@ -3,7 +3,7 @@ package com.cly.cache;
 import java.io.InputStream;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.CacheManager; 
 
 public class CacheMgr {
 
@@ -16,14 +16,14 @@ public class CacheMgr {
 			cMgr.shutdown();
 		}
 
-		cMgr = new CacheManager(in); 
+		
+		cMgr = new CacheManager(in);  
 
 	}
 
-	public static Cache getCache(String name) {
+	public static Cache getCache(String name) { 
 		return cMgr.getCache(name);
-	}
-
+	} 
 	 
  
 }
