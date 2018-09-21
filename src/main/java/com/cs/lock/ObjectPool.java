@@ -65,8 +65,6 @@ public class ObjectPool {
 
 		lockObjList.add(obj);
 
-		System.out.println("list size:" + lockObjList.size());
-
 		this.notifyAll();
 
 	}

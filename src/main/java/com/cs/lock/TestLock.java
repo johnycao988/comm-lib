@@ -10,25 +10,35 @@ public class TestLock {
 
 		for (int i = 0; i < 20; i++) {
 
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						TestObject to = (TestObject) op.getObject();
-						System.out.println(this.toString() + " Get Object-" + to.getCount() + " OK.");
-
-						Thread.sleep(1000);
-
-						op.releaseObject(to);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-				}
-			}, "Thread-Test-" + i).start();
-
+			TestThread tt=new TestThread(op);
+			tt.start();
 		}
 
 	}
 
+}
+
+class TestThread extends Thread{
+	
+	ObjectPool op;
+	
+	public TestThread(ObjectPool op){
+		this.op=op;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			TestObject to = (TestObject) op.getObject();
+			System.out.println(this.toString() + " Get Object-" + to.getCount() + " OK.");
+
+			Thread.sleep(1000);
+
+			op.releaseObject(to);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 }
