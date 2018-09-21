@@ -16,6 +16,10 @@ public interface KeyValue {
 	
 	public  void append(String key, String value);
 
-	public  void delete(String key);
-
+	public  void delete(String key);	 
+	
+	 
+		
 }
+
+

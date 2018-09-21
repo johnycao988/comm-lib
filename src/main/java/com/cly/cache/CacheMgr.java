@@ -24,6 +24,6 @@ public class CacheMgr {
 	public static Cache getCache(String name) { 
 		return cMgr.getCache(name);
 	} 
-	 
+	
  
 }

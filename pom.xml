@@ -95,7 +95,7 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus</id>
-			<url>http://10.39.101.226:8081/repository/cly_release/</url>
+			<url>http://nexus.cscloud.com/repository/maven-releases/</url>
 		</repository>
 	</distributionManagement>
 
