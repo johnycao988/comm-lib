@@ -1,7 +1,7 @@
 package com.cs.keys;
 
 
-import java.util.Base64;
+ 
 import java.util.Map;
 
 public class Test {
@@ -17,9 +17,7 @@ public class Test {
 			byte[] privateKey=KeyUtil.getPrivateKey(keyMap) ;
 			byte[] publicKey=KeyUtil.getPublicKey(keyMap); 
 			
-			System.out.println("Public Key:\r\n"+Base64.getEncoder().encodeToString(publicKey));
-			System.out.println("Private Key:\r\n"+Base64.getEncoder().encodeToString(privateKey));
-			
+		 	
 			
 			String data="testkl4k 12k231l2";
 			

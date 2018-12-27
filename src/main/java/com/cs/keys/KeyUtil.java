@@ -13,8 +13,7 @@ import java.security.interfaces.RSAPrivateKey;
 
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
+import java.security.spec.X509EncodedKeySpec; 
 import java.util.HashMap;
 
 import java.util.Map;
@@ -51,17 +50,7 @@ public class KeyUtil {
 
 	}
 
-	public static byte[] decryptBASE64(String key) throws Exception {
-
-		return Base64.getDecoder().decode(key);
-
-	}
-
-	public static String encryptBASE64(byte[] key) throws Exception {
-
-		return Base64.getEncoder().encodeToString(key);
-
-	}
+ 
 
 	public static Map<String, Object> generateKeys() throws Exception {
 
